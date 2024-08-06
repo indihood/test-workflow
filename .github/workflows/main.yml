@@ -30,7 +30,8 @@ jobs:
         id: check_tag
         run: |
           echo "Job2 executed"
-          sleep 10
+          sleep 20
+          echo "false" >> $GITHUB_OUTPUT
   job3:
     name: job3
     if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
@@ -73,5 +74,5 @@ jobs:
         run: |
           echo "Job6 executed"
           sleep 360
-          echo "this job gets executed even though the workflow was cancelled
+          echo "this job gets executed even though the workflow was cancelled"
         
