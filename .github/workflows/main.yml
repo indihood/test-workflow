@@ -2,10 +2,10 @@ name: Test Workflow
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 env:
   PROJECT: test-workflow
   GITHUB_ACTOR: ${{ secrets.PACKAGEUSER }}
