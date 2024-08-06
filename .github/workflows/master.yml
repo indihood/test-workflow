@@ -1,0 +1,69 @@
+name: Test Workflow
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+env:
+  PROJECT: test-workflow
+  GITHUB_ACTOR: ${{ secrets.PACKAGEUSER }}
+  GITHUB_TOKEN: ${{ secrets.PACKAGETOKEN }}
+jobs:
+  job1:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Validate JIRA IDs in PR template
+        run: |
+          echo "Workflow started with job 1"
+  job2:
+    name: jobs2
+    needs: job1
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    outputs:
+      tagged: true
+    steps:
+      - name: job2echo
+        id: check_tag
+        run: |
+          echo "Job2 executed"
+  job3:
+    name: object storage service build
+    if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
+    needs: job2
+    runs-on: ubuntu-20.04
+    timeout-minutes: 30
+    steps:
+      - name: job3echo
+        run: |
+          echo "Job3 executed"
+  job4:
+    name: job4
+    if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
+    needs: job2
+    runs-on: ubuntu-20.04
+    timeout-minutes: 30
+    steps:
+      - name: job4echo
+        run: |
+          echo "Job4 executed"
+  job5:
+    name: job5
+    needs: [job3,job4]
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    steps:
+      - name: job5echo
+        run: |
+          echo "Job5 executed"
+  job6:
+    if: ${{ github.event_name == 'push' && !failure() && !cancelled() }}
+    needs: [ job1 ]
+    name: job6
+    runs-on: ubuntu-20.04
+    timeout-minutes: 120
+    steps:
+      - name: job6echo
+        run: echo "Job6 executed"
