@@ -70,4 +70,8 @@ jobs:
     timeout-minutes: 120
     steps:
       - name: job6echo
-        run: echo "Job6 executed"
+        run: |
+          echo "Job6 executed"
+          sleep 360
+          echo "this job gets executed even though the workflow was cancelled
+        
