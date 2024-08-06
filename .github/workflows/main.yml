@@ -32,7 +32,7 @@ jobs:
           echo "Job2 executed"
           sleep 10
   job3:
-    name: object storage service build
+    name: job3
     if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
     needs: job2
     runs-on: ubuntu-20.04
@@ -62,7 +62,7 @@ jobs:
         run: |
           echo "Job5 executed"
   job6:
-    if: ${{ github.event_name == 'push' && !failure() && !cancelled() }}
+    if: ${{ github.event_name == 'push' && !failure() }}
     needs: [ job1 ]
     name: job6
     runs-on: ubuntu-20.04
