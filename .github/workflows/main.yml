@@ -64,7 +64,7 @@ jobs:
           echo "Job5 executed"
           sleep 10
   job6:
-    if: ${{ !failure() }}
+    # if: ${{ !failure() }}
     needs: [ job5 ]
     name: job6
     runs-on: ubuntu-20.04
