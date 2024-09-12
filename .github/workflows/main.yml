@@ -12,6 +12,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.PACKAGETOKEN }}
 jobs:
   job1:
+    name: job1
     runs-on: ubuntu-20.04
     steps:
       - name: Validate JIRA IDs in PR template
@@ -31,7 +32,7 @@ jobs:
           echo "Job2 executed"
   job3:
     name: job3
-    if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
+    if: ${{ needs.job1.outputs.tagged == 'false' && !cancelled() }}
     needs: job2
     runs-on: ubuntu-20.04
     timeout-minutes: 30
@@ -42,7 +43,7 @@ jobs:
           sleep 30
   job4:
     name: job4
-    if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
+    if: ${{ needs.job1.outputs.tagged == 'false' && !cancelled() }}
     needs: job2
     runs-on: ubuntu-20.04
     timeout-minutes: 30
