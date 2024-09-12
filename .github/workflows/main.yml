@@ -23,14 +23,14 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     outputs:
-      tagged: true
+      tagged: false
     steps:
       - name: job2echo
         id: check_tag
         run: |
           echo "Job2 executed"
   job3:
-    name: object storage service build
+    name: job3
     if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
     needs: job2
     runs-on: ubuntu-20.04
