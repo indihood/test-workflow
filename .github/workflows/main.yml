@@ -2,10 +2,10 @@ name: Test Workflow
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 env:
   PROJECT: test-workflow
   GITHUB_ACTOR: ${{ secrets.PACKAGEUSER }}
@@ -14,10 +14,9 @@ jobs:
   job1:
     runs-on: ubuntu-20.04
     steps:
-      - name: job1echo
+      - name: Validate JIRA IDs in PR template
         run: |
           echo "Workflow started with job 1"
-          sleep 10
   job2:
     name: jobs2
     needs: job1
@@ -30,10 +29,8 @@ jobs:
         id: check_tag
         run: |
           echo "Job2 executed"
-          sleep 20
-          echo "false" >> $GITHUB_OUTPUT
   job3:
-    name: job3
+    name: object storage service build
     if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
     needs: job2
     runs-on: ubuntu-20.04
@@ -42,7 +39,7 @@ jobs:
       - name: job3echo
         run: |
           echo "Job3 executed"
-          sleep 10
+          sleep 30
   job4:
     name: job4
     if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
@@ -62,17 +59,12 @@ jobs:
       - name: job5echo
         run: |
           echo "Job5 executed"
-          sleep 10
   job6:
-    # if: ${{ !failure() }}
-    needs: [ job5 ]
+    if: ${{ github.event_name == 'push' && !failure() && !cancelled() }}
+    needs: [ job1 ]
     name: job6
     runs-on: ubuntu-20.04
     timeout-minutes: 120
     steps:
       - name: job6echo
-        run: |
-          echo "Job6 executed"
-          sleep 360
-          echo "this job gets executed even though the workflow was cancelled"
-        
+        run: echo "Job6 executed"
