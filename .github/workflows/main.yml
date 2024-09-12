@@ -5,33 +5,34 @@ on:
       - master
   pull_request:
     branches:
-      - master
+      - main
 env:
   PROJECT: test-workflow
   GITHUB_ACTOR: ${{ secrets.PACKAGEUSER }}
   GITHUB_TOKEN: ${{ secrets.PACKAGETOKEN }}
 jobs:
   job1:
+    name: job1
     runs-on: ubuntu-20.04
     steps:
       - name: Validate JIRA IDs in PR template
         run: |
           echo "Workflow started with job 1"
   job2:
-    name: jobs2
+    name: job2
     needs: job1
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     outputs:
-      tagged: true
+      tagged: false
     steps:
       - name: job2echo
         id: check_tag
         run: |
           echo "Job2 executed"
   job3:
-    name: object storage service build
-    if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
+    name: job3
+    if: ${{ needs.job2.outputs.tagged == 'false' && !cancelled() }}
     needs: job2
     runs-on: ubuntu-20.04
     timeout-minutes: 30
@@ -39,9 +40,10 @@ jobs:
       - name: job3echo
         run: |
           echo "Job3 executed"
+          sleep 120
   job4:
     name: job4
-    if: ${{ needs.check-tag.outputs.tagged == 'false' && !cancelled() }}
+    if: ${{ needs.job2.outputs.tagged == 'false' && !cancelled() }}
     needs: job2
     runs-on: ubuntu-20.04
     timeout-minutes: 30
@@ -50,6 +52,7 @@ jobs:
         run: |
           echo "Job4 executed"
   job5:
+    if: true
     name: job5
     needs: [job3,job4]
     runs-on: ubuntu-20.04
